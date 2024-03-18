@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.identity.Identity
+import com.zezo.firebaseauth.core.Screen
 import com.zezo.firebaseauth.presentation.sign_in.GoogleAuthUiClint
 import com.zezo.firebaseauth.presentation.sign_in.ProfileScreen
 import com.zezo.firebaseauth.presentation.sign_in.SignInScreen
@@ -50,14 +51,14 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "sign_in") {
+                    NavHost(navController = navController, startDestination = Screen.SignInScreen.route) {
 
-                        composable("sign_in") {
+                        composable(Screen.SignInScreen.route) {
                             val viewModel = viewModel<SingInViewModel>()
                             val state by viewModel.state.collectAsStateWithLifecycle()
                             LaunchedEffect(key1 = Unit){
                                 if (googleAuthUiClint.getSignInUser()!=null){
-                                    navController.navigate("profile_screen")
+                                    navController.navigate(Screen.ProfileScreen.route)
                                 }
                             }
                             val launcher = rememberLauncherForActivityResult(
@@ -81,7 +82,7 @@ class MainActivity : ComponentActivity() {
                                         "Sign in Successfully",
                                         Toast.LENGTH_LONG
                                     ).show()
-                                    navController.navigate("profile_screen")
+                                    navController.navigate(Screen.ProfileScreen.route)
                                     viewModel.resetState()
                                 }
                             }
@@ -98,7 +99,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                        composable("profile_screen"){
+                        composable(Screen.ProfileScreen.route){
                             ProfileScreen(user = googleAuthUiClint.getSignInUser()) {
                                 lifecycleScope.launch {
                                     googleAuthUiClint.signOut()
